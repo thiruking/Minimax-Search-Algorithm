@@ -112,5 +112,111 @@ end
 ![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/a2acb6a1-ed8e-42e5-8968-fe805e4b0255)
 
 <hr>
+
+## PROGRAM :
+
+```PY
+import time
+
+# Predefined inputs
+inputs = [(0,0), (0,1), (2,0), (1,2), (2,2)]
+move_index = 0
+
+class Game:
+    def __init__(self):
+        self.board = [['.']*3 for _ in range(3)]
+        self.turn = 'X'
+
+    def draw(self):
+        for row in self.board:
+            print(' '.join(row))
+        print()
+
+    def check(self):
+        b = self.board
+
+        for i in range(3):
+            if b[i][0] == b[i][1] == b[i][2] != '.': return b[i][0]
+            if b[0][i] == b[1][i] == b[2][i] != '.': return b[0][i]
+
+        if b[0][0] == b[1][1] == b[2][2] != '.': return b[0][0]
+        if b[0][2] == b[1][1] == b[2][0] != '.': return b[0][2]
+
+        for row in b:
+            if '.' in row: return None
+        return '.'
+
+    def max(self):
+        res = self.check()
+        if res == 'X': return -1, None, None
+        if res == 'O': return 1, None, None
+        if res == '.': return 0, None, None
+
+        best = -2
+        move = (None, None)
+
+        for i in range(3):
+            for j in range(3):
+                if self.board[i][j] == '.':
+                    self.board[i][j] = 'O'
+                    val = self.min()[0]
+                    self.board[i][j] = '.'
+                    if val > best:
+                        best, move = val, (i, j)
+
+        return best, move[0], move[1]
+
+    def min(self):
+        res = self.check()
+        if res == 'X': return -1, None, None
+        if res == 'O': return 1, None, None
+        if res == '.': return 0, None, None
+
+        best = 2
+        move = (None, None)
+
+        for i in range(3):
+            for j in range(3):
+                if self.board[i][j] == '.':
+                    self.board[i][j] = 'X'
+                    val = self.max()[0]
+                    self.board[i][j] = '.'
+                    if val < best:
+                        best, move = val, (i, j)
+
+        return best, move[0], move[1]
+
+    def play(self):
+        global move_index
+
+        while True:
+            self.draw()
+            res = self.check()
+
+            if res is not None:
+                print("Result:", "Tie" if res == '.' else res, "wins")
+                return
+
+            if self.turn == 'X':
+                px, py = inputs[move_index]
+                move_index += 1
+                print(f"X plays: {px}, {py}")
+
+                if self.board[px][py] == '.':
+                    self.board[px][py] = 'X'
+                    self.turn = 'O'
+            else:
+                _, x, y = self.max()
+                print(f"O plays: {x}, {y}")
+                self.board[x][y] = 'O'
+                self.turn = 'X'
+
+Game().play()
+```
+
+## OUTPUT :
+![alt text](01.png)
+![alt text](02.png)
+
 <h2>Result:</h2>
 <p>Thus,Implementation of  Minimax Search Algorithm for a Simple TIC-TAC-TOE game wasa done successfully.</p>
